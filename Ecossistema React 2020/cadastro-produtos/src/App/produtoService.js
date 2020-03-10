@@ -31,9 +31,22 @@ export default class ProdutoService {
 
     obterProdutos = () => {
         const produtos = localStorage.getItem(PRODUTOS);
+        if(!produtos){
+            return [];
+        }
         return JSON.parse(produtos);
     }
     
+  obterIndex = (sku) => {
+      let index = null;
+      this.obterProdutos().forEach((produto, i) => {
+          if(produto.sku === sku){
+              index = i;
+          }
+      })
+      return index;
+  }
+
     salvar = (produto) =>{
 
         this.validar(produto);
@@ -45,7 +58,15 @@ export default class ProdutoService {
         else{
             produtos = JSON.parse(produtos);
         }
-        produtos.push(produto);
+
+        const index = this.obterIndex(produto.sku);
+
+        if(index === null){
+            produtos.push(produto);
+        }
+        else{
+        produtos[index] = produto;
+        }
         localStorage.setItem(PRODUTOS,JSON.stringify(produtos));
     }
 }

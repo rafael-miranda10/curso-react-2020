@@ -1,5 +1,6 @@
 import React from 'react';
 import ProdutoService from '../../App/produtoService';
+import {withRouter} from 'react-router-dom';
 
 const estadoInicial = {
     nome: '',
@@ -8,9 +9,10 @@ const estadoInicial = {
     fornecedor: '',
     preco: 0,
     sucesso: false,
-    errors: []
+    errors: [],
+    atualiazando: false
 }
-export default class CadastroProduto extends React.Component {
+class CadastroProduto extends React.Component {
 
     state = estadoInicial;
 
@@ -50,15 +52,32 @@ export default class CadastroProduto extends React.Component {
         this.setState(estadoInicial);
     }
 
+     componentDidMount(){
+          const sku = this.props.match.params.sku;
+
+          if(sku){
+            const resultado = this.service.obterProdutos().filter(produto => produto.sku === sku);
+            if(resultado.length === 1){
+               const produtoEncontrado = resultado[0]
+               this.setState({...produtoEncontrado, atualiazando: true});
+            }
+          }
+     }
+
     render() {
         return (
             <div className="card">
-                <div className="card-header">Cadastro de Produtos</div>
+                <div className="card-header">
+                {
+                    this.state.atualiazando ? 'Atualização ' : 'Cadastro '
+                }
+                de Produtos
+                 </div>
                 <div className="card-body">
 
                     {this.state.sucesso &&
-                        <div class="alert alert-dismissible alert-success" >
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <div className="alert alert-dismissible alert-success" >
+                            <button type="button" className="close" data-dismiss="alert">&times;</button>
                             <strong>Muito bem!</strong> Cadastrado realizado com sucesso!
                         </div>
                     }
@@ -67,16 +86,14 @@ export default class CadastroProduto extends React.Component {
 
                         this.state.errors.map(msg => {
                             return (
-                                <div class="alert alert-dismissible alert-danger" >
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <div className="alert alert-dismissible alert-danger" >
+                                    <button type="button" className="close" data-dismiss="alert">&times;</button>
                                     <strong>Ops!</strong> Algo não está legal...
                                      {msg}
                                 </div>
                             )
                         })
                     }
-
-
 
                     <div className="row">
                         <div className="col-md-6">
@@ -88,7 +105,7 @@ export default class CadastroProduto extends React.Component {
                         <div className="col-md-6">
                             <div className="form-group">
                                 <label>SKU: *</label>
-                                <input type="text" className="form-control" value={this.state.sku} name="sku" onChange={this.onChange} />
+                                <input type="text" className="form-control" value={this.state.sku} name="sku" onChange={this.onChange} disabled={this.state.atualiazando} />
                             </div>
                         </div>
                     </div>
@@ -116,7 +133,11 @@ export default class CadastroProduto extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-md-1">
-                            <button className="btn btn-success" onClick={this.onSubmit}>Salvar</button>
+                            <button className="btn btn-success" onClick={this.onSubmit}>
+                                {
+                                    this.state.atualiazando ? 'Atualizar' : 'Cadastrar'
+                                }
+                                </button>
                         </div>
                         <div className="col-md-1">
                             <button className="btn btn-primary" onClick={this.LimparCampos} >Limpar</button>
@@ -129,3 +150,4 @@ export default class CadastroProduto extends React.Component {
     }
 }
 
+export default withRouter(CadastroProduto)
