@@ -10,19 +10,19 @@ export default class ProdutoService {
         const errors = [];
 
         if (!produto.nome) {
-            errors.push('O campo nome é obrigatório.');
+            errors.push(' O campo nome é obrigatório.');
         }
         if (!produto.sku) {
-            errors.push('O campo sku é obrigatório.');
+            errors.push( 'O campo sku é obrigatório.');
         }
         if (!produto.preco || produto.preco <= 0) {
-            errors.push('O campo preço é obrigatório e deve ser maior que zero (0).');
+            errors.push(' O campo preço é obrigatório e deve ser maior que zero (0).');
         }
         if (!produto.descricao) {
-            errors.push('O campo descricao é obrigatório.');
+            errors.push(' O campo descricao é obrigatório.');
         }
         if (!produto.fornecedor) {
-            errors.push('O campo fornecedor é obrigatório.');
+            errors.push(' O campo fornecedor é obrigatório.');
         }
         if (errors.length > 0) {
             throw new ErroValidacao(errors);

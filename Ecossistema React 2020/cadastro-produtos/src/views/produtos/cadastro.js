@@ -1,6 +1,7 @@
 import React from 'react';
 import ProdutoService from '../../App/produtoService';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import Card from '../../components/card';
 
 const estadoInicial = {
     nome: '',
@@ -28,6 +29,8 @@ class CadastroProduto extends React.Component {
     }
 
     onSubmit = (event) => {
+        event.preventDefault();
+
         const produto = {
             nome: this.state.nome,
             sku: this.state.sku,
@@ -43,7 +46,7 @@ class CadastroProduto extends React.Component {
         }
         catch (erro) {
             const errors = erro.errors;
-            this.setState({errors: errors});
+            this.setState({ errors: errors });
         }
 
     }
@@ -52,29 +55,22 @@ class CadastroProduto extends React.Component {
         this.setState(estadoInicial);
     }
 
-     componentDidMount(){
-          const sku = this.props.match.params.sku;
+    componentDidMount() {
+        const sku = this.props.match.params.sku;
 
-          if(sku){
+        if (sku) {
             const resultado = this.service.obterProdutos().filter(produto => produto.sku === sku);
-            if(resultado.length === 1){
-               const produtoEncontrado = resultado[0]
-               this.setState({...produtoEncontrado, atualiazando: true});
+            if (resultado.length === 1) {
+                const produtoEncontrado = resultado[0]
+                this.setState({ ...produtoEncontrado, atualiazando: true });
             }
-          }
-     }
+        }
+    }
 
     render() {
         return (
-            <div className="card">
-                <div className="card-header">
-                {
-                    this.state.atualiazando ? 'Atualização ' : 'Cadastro '
-                }
-                de Produtos
-                 </div>
-                <div className="card-body">
-
+            <Card header={this.state.atualiazando ? 'Atualização de produto ' : 'Cadastro de produto '}>
+                <form id="frmProduto" onSubmit={this.onSubmit}>
                     {this.state.sucesso &&
                         <div className="alert alert-dismissible alert-success" >
                             <button type="button" className="close" data-dismiss="alert">&times;</button>
@@ -133,19 +129,19 @@ class CadastroProduto extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-md-1">
-                            <button className="btn btn-success" onClick={this.onSubmit}>
+                            <button className="btn btn-success" type="submit">
                                 {
                                     this.state.atualiazando ? 'Atualizar' : 'Cadastrar'
                                 }
-                                </button>
+                            </button>
                         </div>
                         <div className="col-md-1">
                             <button className="btn btn-primary" onClick={this.LimparCampos} >Limpar</button>
                         </div>
                     </div>
 
-                </div>
-            </div>
+                </form>
+            </Card >
         )
     }
 }
