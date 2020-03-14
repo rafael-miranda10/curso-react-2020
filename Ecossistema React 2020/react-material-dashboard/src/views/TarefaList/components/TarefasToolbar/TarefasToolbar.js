@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UsersToolbar = props => {
+const TarefasToolbar = props => {
   const { className, ...rest } = props;
 
   const [descricao, setDescricao] = useState('');
@@ -106,8 +106,8 @@ const UsersToolbar = props => {
   );
 };
 
-UsersToolbar.propTypes = {
+TarefasToolbar.propTypes = {
   className: PropTypes.string
 };
 
-export default UsersToolbar;
+export default TarefasToolbar;
