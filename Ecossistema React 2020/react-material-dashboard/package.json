@@ -12,7 +12,12 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "linebreak-style": 0,
+      "global-require": 0,
+      "eslint linebreak-style": [0, "error", "windows"]
+    }
   },
   "browserslist": {
     "production": [

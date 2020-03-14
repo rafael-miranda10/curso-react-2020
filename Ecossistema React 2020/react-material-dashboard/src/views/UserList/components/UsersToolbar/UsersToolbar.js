@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -66,8 +67,9 @@ const UsersToolbar = props => {
               className={classes.searchInput}
               fullWidth
               label="Descrição:"
-              placeholder="Descrição da tarefa"
               onChange={e => setDescricao(e.target.value)}
+              placeholder="Descrição da tarefa"
+              value={descricao}
             />
           </Grid>
           <Grid
@@ -76,7 +78,10 @@ const UsersToolbar = props => {
           >
             <FormControl fullWidth>
               <InputLabel>Categoria: </InputLabel>
-              <Select onChange={e => setCategoria(e.target.value)}>
+              <Select
+                onChange={e => setCategoria(e.target.value)}
+                value={categoria}
+              >
                 <MenuItem value="">Selecione</MenuItem>
                 <MenuItem value={'TRABALHO'}>TRABALHO</MenuItem>
                 <MenuItem value={'ESTUDOS'}>ESTUDOS</MenuItem>
@@ -86,12 +91,12 @@ const UsersToolbar = props => {
           </Grid>
           <Grid
             item
-            md={4}
+            md={2}
           >
             <Button
+              color="secondary"
               onClick={submit}
-              color="default"
-              variant="container"
+              variant="contained"
             >Adicionar</Button>
           </Grid>
         </Grid>
