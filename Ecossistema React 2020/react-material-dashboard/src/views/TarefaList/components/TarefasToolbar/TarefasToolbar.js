@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-console */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -46,7 +47,13 @@ const TarefasToolbar = props => {
 
   const submit = (event) => {
     event.preventDefault();
-    console.log(`Valores: descricao - ${descricao}, categoria - ${categoria}`);
+    const tarefa = {
+      descricao : descricao,
+      categoria: categoria
+    }
+    props.salvar(tarefa);
+    setDescricao('');
+    setCategoria('');
   }
 
   return (
