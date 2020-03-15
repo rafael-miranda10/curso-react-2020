@@ -22,7 +22,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const API_URL = 'https://minhastarefas-api.herokuapp.com/tarefas';
-const HEADERS = { 'x-tenant-id': 'rafael.miranda@email.com' };
 
 const TarefaList = () => {
   const classes = useStyles();
@@ -34,13 +33,14 @@ const TarefaList = () => {
 
   const salvar = (tarefa) => {
     axios.post(API_URL, tarefa, {
-      headers: HEADERS
+      headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
     }).then(response => {
       const novaTarefa = response.data;
       setTarefas([...tarefas, novaTarefa]);
       setTitleDialog('Aviso!');
       setMensagemDialog('Muito bem! Tarefa adicionada na lista.');
       setOpenDialog(true);
+    // eslint-disable-next-line no-unused-vars
     }).catch(erro => {
       setTitleDialog('Atenção!');
       setMensagemDialog('Ops! Algo não deu certo...');
@@ -50,7 +50,7 @@ const TarefaList = () => {
 
   const listarTarefas = () => {
     axios.get(API_URL, {
-      headers: HEADERS
+      headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
     }).then(response => {
       const listaDeTarefas = response.data;
       setTarefas(listaDeTarefas);
@@ -63,7 +63,8 @@ const TarefaList = () => {
 
   const alterarStatus = (id) => {
     axios.patch(`${API_URL}/${id}`, null, {
-      headers: HEADERS
+      headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
+    // eslint-disable-next-line no-unused-vars
     }).then(response => {
       const lista = [...tarefas];
       lista.forEach(tarefa => {
@@ -85,7 +86,8 @@ const TarefaList = () => {
 
   const deletar = (id) => {
     axios.delete(`${API_URL}/${id}`, {
-      headers: HEADERS
+      headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
+    // eslint-disable-next-line no-unused-vars
     }).then(response => {
       const lista = tarefas.filter(tarefa => tarefa.id !== id);
       setTarefas(lista);
@@ -115,12 +117,17 @@ const TarefaList = () => {
           tarefas={tarefas}
         />
       </div>
-      <Dialog open={openDialog} onClose={e => setOpenDialog(false)}>
+      <Dialog
+        // eslint-disable-next-line no-unused-vars
+        onClose={e => setOpenDialog(false)}
+        open={openDialog}
+      >
         <DialogTitle>{titleDialog}</DialogTitle>
         <DialogContent>
           {mensagemDialog}
         </DialogContent>
         <DialogActions>
+          // eslint-disable-next-line no-unused-vars
           <Button onClick={e => setOpenDialog(false)}>Fechar</Button>
         </DialogActions>
       </Dialog>
