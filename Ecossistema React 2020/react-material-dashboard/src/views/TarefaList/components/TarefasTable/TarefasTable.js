@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -16,6 +17,7 @@ import {
 } from '@material-ui/core';
 import TimerIcon from '@material-ui/icons/Timer';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -57,7 +59,8 @@ const TarefasTable = props => {
                   <TableCell>Descrição</TableCell>
                   <TableCell>Categoria</TableCell>
                   <TableCell>Status</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell />
+                  <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -83,6 +86,11 @@ const TarefasTable = props => {
 
                           </IconButton>
                         </TableCell>
+                        <TableCell>
+                          <IconButton onClick={e => props.deleteAction(tarefa.id)}>
+                            <DeleteIcon color="error"/>
+                          </IconButton>
+                        </TableCell>
                       </TableRow>
                     )
                   })
@@ -98,7 +106,7 @@ const TarefasTable = props => {
 
 TarefasTable.propTypes = {
   className: PropTypes.string,
-  users: PropTypes.array.isRequired
+  tarefas: PropTypes.array.isRequired
 };
 
 export default TarefasTable;
