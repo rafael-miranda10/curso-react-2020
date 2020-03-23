@@ -1,18 +1,18 @@
 /* eslint-disable no-console */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   listar,
-  salvar, 
+  salvar,
   deletar,
   alterarStatus
 } from '../../store/tarefasReducer';
 
 import { TarefasToolbar, TarefasTable } from './components';
-import axios from 'axios';
+
 import {
   Dialog,
   DialogActions,
@@ -20,6 +20,10 @@ import {
   DialogTitle,
   Button
 } from '@material-ui/core'
+
+import {
+  esconderMensagem
+} from '../../store/mensagensReducer'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,10 +38,6 @@ const API_URL = 'https://minhastarefas-api.herokuapp.com/tarefas';
 
 const TarefaList = (props) => {
   const classes = useStyles();
-
-  const [openDialog, setOpenDialog] = useState(false);
-  const [mensagemDialog, setMensagemDialog] = useState('');
-  const [titleDialog, setTitleDialog] = useState('');
 
 
   useEffect(() => {
@@ -56,16 +56,15 @@ const TarefaList = (props) => {
         />
       </div>
       <Dialog
-        onClose={e => setOpenDialog(false)}
-        open={openDialog}
+        onClose={props.esconderMensagem}
+        open={props.openDialog}
       >
-        <DialogTitle>{titleDialog}</DialogTitle>
+        <DialogTitle>Atenção!</DialogTitle>
         <DialogContent>
-          {mensagemDialog}
+          {props.mensagem}
         </DialogContent>
         <DialogActions>
-          // eslint-disable-next-line no-unused-vars
-          <Button onClick={e => setOpenDialog(false)}>Fechar</Button>
+          <Button onClick={props.esconderMensagem}>Fechar</Button>
         </DialogActions>
       </Dialog>
     </div>
@@ -73,10 +72,18 @@ const TarefaList = (props) => {
 };
 
 const mapStateToProps = state => ({
-  tarefas: state.tarefas.tarefas
+  tarefas: state.tarefas.tarefas,
+  mensagem: state.mensagens.mensagem,
+  openDialog: state.mensagens.mostrarMensagem
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ listar, salvar, deletar,alterarStatus }, dispatch);
+  bindActionCreators({
+    listar,
+    salvar,
+    deletar,
+    alterarStatus,
+    esconderMensagem
+  }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(TarefaList);

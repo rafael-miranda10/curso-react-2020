@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { mostrarMensagem } from './mensagensReducer';
 
 const http = axios.create({
   baseURL: 'https://minhastarefas-api.herokuapp.com'
@@ -13,27 +14,29 @@ const ACTIONS = {
 }
 
 const ESTADO_INICIAL = {
-  tarefas: []
+  tarefas: [],
+  quantidade: 0
 }
 
 export const tarefaReducer = (state = ESTADO_INICIAL, action) => {
   switch (action.type) {
     case ACTIONS.LISTAR:
-      return { ...state, tarefas: action.tarefas };
+      return { ...state, tarefas: action.tarefas, quantidade: action.tarefas.length};
     case ACTIONS.ADD:
-      return { ...state, tarefas: [...state.tarefas, action.tarefa] };
+      const lista = [...state.tarefas, action.tarefa];
+      return { ...state, tarefas: lista, quantidade: lista.length };
     case ACTIONS.REMOVER:
       var id = action.id;
       var tarefas = state.tarefas.filter(tarefa => tarefa.id !== id);
-      return { ...state, tarefas: tarefas }
+      return { ...state, tarefas: tarefas, quantidade: tarefas.length }
     case ACTIONS.UPDATESTATUS:
-      const lista = [...state.tarefas];
-      lista.forEach(tarefa => {
+      const listaAtualizada = [...state.tarefas];
+      listaAtualizada.forEach(tarefa => {
         if (tarefa.id === action.id) {
           tarefa.done = true;
         }
       })
-      return {...state, tarefas:lista}
+      return { ...state, tarefas: lista }
     default:
       return state;
   }
@@ -58,10 +61,12 @@ export function salvar(tarefa) {
     http.post('/tarefas', tarefa, {
       headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
     }).then(response => {
-      dispatch({
+      dispatch([{
         type: ACTIONS.ADD,
         tarefa: response.data
-      })
+      },
+      mostrarMensagem('Tarefa salva com sucesso!')
+      ])
     })
   }
 }
@@ -72,10 +77,12 @@ export function deletar(id) {
     http.delete(`/tarefas/${id}`, {
       headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
     }).then(response => {
-      dispatch({
+      dispatch([{
         type: ACTIONS.REMOVER,
         id: id
-      })
+      },
+      mostrarMensagem('Tarefa removida com sucesso!')
+      ])
     })
   }
 }
@@ -86,10 +93,11 @@ export function alterarStatus(id) {
     http.patch(`/tarefas/${id}`, null, {
       headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
     }).then(response => {
-      dispatch({
+      dispatch([{
         type: ACTIONS.UPDATESTATUS,
         id: id
-      })
+      }, mostrarMensagem('Tarefa atualizada com sucesso!')
+      ])
     })
   }
 }
