@@ -4,7 +4,12 @@ import { makeStyles } from '@material-ui/styles';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { listar } from '../../store/tarefasReducer';
+import {
+  listar,
+  salvar, 
+  deletar,
+  alterarStatus
+} from '../../store/tarefasReducer';
 
 import { TarefasToolbar, TarefasTable } from './components';
 import axios from 'axios';
@@ -30,67 +35,9 @@ const API_URL = 'https://minhastarefas-api.herokuapp.com/tarefas';
 const TarefaList = (props) => {
   const classes = useStyles();
 
-  const [tarefas, setTarefas] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [mensagemDialog, setMensagemDialog] = useState('');
   const [titleDialog, setTitleDialog] = useState('');
-
-  const salvar = (tarefa) => {
-    axios.post(API_URL, tarefa, {
-      headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
-    }).then(response => {
-      const novaTarefa = response.data;
-      setTarefas([...tarefas, novaTarefa]);
-      setTitleDialog('Aviso!');
-      setMensagemDialog('Muito bem! Tarefa adicionada na lista.');
-      setOpenDialog(true);
-      // eslint-disable-next-line no-unused-vars
-    }).catch(erro => {
-      setTitleDialog('Atenção!');
-      setMensagemDialog('Ops! Algo não deu certo...');
-      setOpenDialog(true);
-    })
-  }
-
-  const alterarStatus = (id) => {
-    axios.patch(`${API_URL}/${id}`, null, {
-      headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
-      // eslint-disable-next-line no-unused-vars
-    }).then(response => {
-      const lista = [...tarefas];
-      lista.forEach(tarefa => {
-        if (tarefa.id === id) {
-          tarefa.done = true;
-        }
-      })
-      setTarefas(lista);
-      setTitleDialog('Aviso!');
-      setMensagemDialog('Muito bem! Tarefa alterada na lista.');
-      setOpenDialog(true);
-    }).catch(erro => {
-      setTitleDialog('Atenção!');
-      setMensagemDialog('Ops! Algo não deu certo. ', erro);
-      setOpenDialog(true);
-    })
-  }
-
-
-  const deletar = (id) => {
-    axios.delete(`${API_URL}/${id}`, {
-      headers: { 'x-tenant-id': localStorage.getItem('email_usuario_logado') }
-      // eslint-disable-next-line no-unused-vars
-    }).then(response => {
-      const lista = tarefas.filter(tarefa => tarefa.id !== id);
-      setTarefas(lista);
-      setTitleDialog('Aviso!');
-      setMensagemDialog('Muito bem! Tarefa removida da lista.');
-      setOpenDialog(true);
-    }).catch(erro => {
-      setTitleDialog('Atenção!');
-      setMensagemDialog('Ops! Algo não deu certo. ', erro);
-      setOpenDialog(true);
-    })
-  }
 
 
   useEffect(() => {
@@ -100,16 +47,15 @@ const TarefaList = (props) => {
 
   return (
     <div className={classes.root}>
-      <TarefasToolbar salvar={salvar} />
+      <TarefasToolbar salvar={props.salvar} />
       <div className={classes.content}>
         <TarefasTable
-          alterarStatus={alterarStatus}
-          deleteAction={deletar}
+          alterarStatus={props.alterarStatus}
+          deleteAction={props.deletar}
           tarefas={props.tarefas}
         />
       </div>
       <Dialog
-        // eslint-disable-next-line no-unused-vars
         onClose={e => setOpenDialog(false)}
         open={openDialog}
       >
@@ -131,6 +77,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ listar }, dispatch);
+  bindActionCreators({ listar, salvar, deletar,alterarStatus }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(TarefaList);
